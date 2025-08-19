@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Антон Холодов](https://up.htmlacademy.ru/javascript-individual/2/user/2646541).
-* Наставник: Алексей Хапов (https://htmlacademy.ru/profile/id118459).
+* Наставник: [Алексей Хапов](https://htmlacademy.ru/profile/id118459).
 
 ---
 
