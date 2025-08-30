@@ -2,7 +2,7 @@
 // 1 задание
 function isLenghtEqualOrLess(str, maxLenght) {
   const currentLen = str.length;
-  return currentLen <= maxLenght;
+  return str.length <= maxLenght;
 }
 
 console.log(isLenghtEqualOrLess('проверяемая строка', 20)); // true
@@ -31,7 +31,7 @@ function digitsToNumber(value) {
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i];
-    const digit = parseInt(char);
+    const digit = parseInt(char, 10);
 
     if (!Number.isNaN(digit)) {
       digits += digit;
@@ -42,7 +42,7 @@ function digitsToNumber(value) {
     return NaN;
   }
 
-  return parseInt(digits);
+  return parseInt(digits, 10);
   }
 
 console.log(digitsToNumber('2023 год')); // 2023
