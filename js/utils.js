@@ -15,4 +15,6 @@ const checkMaxStringLength = (testString, maxLength) => testString.length <= max
 
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
-export {getRandomPositiveInteger, checkMaxStringLength, getRandomArrayElement};
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export {getRandomPositiveInteger, checkMaxStringLength, getRandomArrayElement, isEscEvent};
