@@ -61,4 +61,4 @@ const createPhoto = () => ({
 
 const objectPhoto = new Array(USER_PHOTO).fill(null).map(() => createPhoto());
 
-objectPhoto;
+renderPhotos(objectPhoto);
