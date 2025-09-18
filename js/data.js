@@ -43,6 +43,6 @@ const createPhoto = () => ({
   comments: new Array(getRandomPositiveInteger(1, 6)).fill(null).map(() => createComments()),
 });
 
-const objectPhoto = new Array(USER_PHOTO).fill(null).map(() => createPhoto());
+const objectPhoto = () => new Array(USER_PHOTO).fill(null).map(() => createPhoto());
 
-window.objectPhoto = objectPhoto;
+export {objectPhoto};
