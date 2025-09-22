@@ -1,20 +1,28 @@
-// Функция, возвращающая случайное целое число
+const getRandomInteger = (firstInteger, lastInteger) => {
+  const lower = Math.ceil(Math.min(Math.abs(firstInteger), Math.abs(lastInteger)));
+  const upper = Math.floor(Math.max(Math.abs(firstInteger), Math.abs(lastInteger)));
 
-const getRandomPositiveInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
-  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
   const result = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(result);
 };
 
-//Функция для проверки максимальной длины строки
-
-const checkMaxStringLength = (testString, maxLength) => testString.length <= maxLength;
-
-// Функция для получения случайного элемента массива
-
-const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
+const checkStringLength = (string, maxLength) => string.length <= maxLength;
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export {getRandomPositiveInteger, checkMaxStringLength, getRandomArrayElement, isEscEvent};
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = 100;
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = 0;
+  alertContainer.style.top = 0;
+  alertContainer.style.right = 0;
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+  alertContainer.textContent = message;
+  document.body.append(alertContainer);
+};
+
+export {getRandomInteger, isEscEvent, showAlert, checkStringLength};
