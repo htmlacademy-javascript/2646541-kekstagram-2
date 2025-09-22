@@ -50,7 +50,7 @@ const renderPopup = (data) => {
     }
   };
 
-  const showCommets = () => {
+  const showComments = () => {
     const socialCommentsArray = Array.from(socialComments.children);
 
     let visibleCommentsCouter = 0;
@@ -81,7 +81,7 @@ const renderPopup = (data) => {
 
   const onCommentsLoaderClick = () => {
     commentsNumber += NUMBER_UPLOADED_COMMENTS;
-    showCommets();
+    showComments();
   };
 
   const onCloseBigPicturePopup = (evt) => {
@@ -114,7 +114,7 @@ const renderPopup = (data) => {
   };
 
   getSocialComments();
-  showCommets();
+  showComments();
 
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
 
