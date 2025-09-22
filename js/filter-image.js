@@ -1,4 +1,4 @@
-import { getRandomInteger } from './util.js';
+import { getRandomInteger } from './utils.js';
 import {getPicturesContainer} from './draw-thumbnails.js';
 import {debounce} from './utils/debounce.js';
 

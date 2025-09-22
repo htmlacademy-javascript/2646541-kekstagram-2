@@ -1,4 +1,4 @@
-import {isEscEvent} from './util.js';
+import {isEscEvent} from './utils.js';
 
 const bigPicture = document.querySelector('.big-picture');
 const closeBigPictureButton = bigPicture.querySelector('.cancel');

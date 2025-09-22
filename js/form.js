@@ -1,4 +1,4 @@
-import {checkStringLength} from './util.js';
+import {checkStringLength} from './utils.js';
 import { sendData } from './api.js';
 
 const sliderContainer = document.querySelector('.img-upload__effect-level');
