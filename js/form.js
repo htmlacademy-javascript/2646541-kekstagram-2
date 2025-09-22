@@ -20,6 +20,8 @@ const MAX_COMMENT_LENGTH = 140;
 const SCALE_MIN_VALUE = 25;
 const SCALE_MAX_VALUE = 100;
 const SCALE_CHANGE_VALUE = 25;
+const MAX_HASHTAGS_QUANTITY = 5;
+const MAX_HASHTAG_LENGTH = 20;
 
 const SLIDER_OPTIONS = {
   'chrome': {
@@ -138,10 +140,13 @@ const onEffectClick = ({ target: { value, type } }) => {
 };
 
 const ErrorMessages = {
-  HASHTAG_SUM: 'Нельзя указать больше 5 хэш-тегов',
-  HASHTAG_REPEAT: 'Хэштеги не должны повторяться',
-  HASHTAG_TEMPLATE: 'Хэштеги не соответствуют требованиям. Хэштег должен начинаться с знака #, не может содержать пробелы, спецсимволы, символы пунктуации, эмодзи',
-  COMMENT_LENGTH: 'Длинна комментария не должна быть больше 140 символов',
+  HASHTAG_SUM: `Нельзя указать больше ${MAX_HASHTAGS_QUANTITY} хэш-тегов!`,
+  HASHTAG_REPEAT: 'Хэштеги не должны повторяться!',
+  HASHTAG_INVALID: 'Введён невалидный хэштег! Хэштег должен начинаться с символа #, не может содержать специальные символы!',
+  HASHTAG_ONLY: 'Хэштег не может состоять только из символа #!',
+  HASHTAG_LENGTH: `Максимальная длина хэштега ${MAX_HASHTAG_LENGTH} символов!`,
+  HASHTAG_SEPARATOR: 'Хэштеги должны быть разделены пробелами, без запятых!',
+  COMMENT_LENGTH: `Длина комментария не должна быть больше ${MAX_COMMENT_LENGTH} символов!`
 };
 Object.freeze(ErrorMessages);
 
@@ -183,36 +188,27 @@ const checkUniqueHashtags = (hashtags) => {
   return isUnique;
 };
 
-const removeEmptyValues = (hashtags) => {
-  const nonEmptyHashtags = [];
-  hashtags.forEach((element) => {
-    if (element !== '') {
-      nonEmptyHashtags.push(element);
-    }
-  });
-  return nonEmptyHashtags;
-};
-
-const isFit = (hashtags, template) => hashtags.every((element) => template.test(element));
-
-const renderValidationMessages = (hashtags) => {
-  const re = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
-  const nonEmptyHashtags = removeEmptyValues(hashtags);
-  if (!isFit(nonEmptyHashtags, re)) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_TEMPLATE);
-  } else if (!checkUniqueHashtags(nonEmptyHashtags)) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_REPEAT);
-  } else if (nonEmptyHashtags.length > 5) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_SUM);
-  } else {
-    hashtagsInput.setCustomValidity('');
-  }
-  hashtagsInput.reportValidity();
-};
-
 const onGetHashtags = (evt) => {
-  const hashtags = evt.target.value.split(' ');
-  renderValidationMessages(hashtags);
+  const inputValue = evt.target.value;
+  const hashtags = inputValue.trim().split(/\s+/).filter(tag => tag !== '');
+  let errorMessage = '';
+
+  if (inputValue.includes(',')) {
+    errorMessage = ErrorMessages.HASHTAG_SEPARATOR;
+  } else if (hashtags.length > MAX_HASHTAGS_QUANTITY) {
+    errorMessage = ErrorMessages.HASHTAG_SUM;
+  } else if (!checkUniqueHashtags(hashtags)) {
+    errorMessage = ErrorMessages.HASHTAG_REPEAT;
+  } else if (hashtags.some(tag => tag === '#')) {
+    errorMessage = ErrorMessages.HASHTAG_ONLY;
+  } else if (hashtags.some(tag => tag.length > MAX_HASHTAG_LENGTH)) {
+    errorMessage = ErrorMessages.HASHTAG_LENGTH;
+  } else if (hashtags.some(tag => !/^#[A-Za-zА-Яа-я0-9]+$/.test(tag))) {
+    errorMessage = ErrorMessages.HASHTAG_INVALID;
+  }
+
+  hashtagsInput.setCustomValidity(errorMessage);
+  hashtagsInput.reportValidity();
 };
 
 const onInputFocused = (evt) => evt.stopPropagation();
@@ -240,7 +236,7 @@ const onCloseEditPictureForm = () => {
   editPictureModal.classList.add('hidden');
   document.body.classList.remove('modal-open');
   editPictureCancelButton.removeEventListener('click', onCloseEditPictureForm);
-  hashtagsInput.removeEventListener('blur', onGetHashtags);
+  hashtagsInput.removeEventListener('input', onGetHashtags);
   hashtagsInput.removeEventListener('keydown', onInputFocused);
   commentInput.removeEventListener('input', onCheckComment);
   commentInput.removeEventListener('keydown', onInputFocused);
@@ -339,7 +335,7 @@ const showEditPictureForm = () => {
   document.body.classList.add('modal-open');
   scaleControlValue.value = '100%';
   editPictureCancelButton.addEventListener('click', onCloseEditPictureForm);
-  hashtagsInput.addEventListener('blur', onGetHashtags);
+  hashtagsInput.addEventListener('input', onGetHashtags);
   hashtagsInput.addEventListener('keydown', onInputFocused);
   commentInput.addEventListener('input', onCheckComment);
   commentInput.addEventListener('keydown', onInputFocused);
