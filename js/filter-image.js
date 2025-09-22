@@ -2,10 +2,10 @@ import { getRandomInteger } from './utils.js';
 import {getPicturesContainer} from './draw-thumbnails.js';
 import {debounce} from './utils/debounce.js';
 
-const buttonConteiner = document.querySelector('.img-filters__form');
-const buttons = Array.from(buttonConteiner.children);
 const RERENDER_DELAY = 500;
 const NUMBER_RANDOM_IMAGES = 10;
+const buttonConteiner = document.querySelector('.img-filters__form');
+const buttons = Array.from(buttonConteiner.children);
 
 const removeFiltersHidden = () => {
   const filters = document.querySelector('.img-filters');
@@ -22,6 +22,11 @@ const assignAnActiveClass = (activeButton) => {
 const onFiltersClick = (images) => {
 
   buttonConteiner.addEventListener('click', debounce((evt) => {
+    const clickedButton = evt.target;
+
+    if (clickedButton.classList.contains('img-filters__button--active')) {
+      return;
+    }
 
     assignAnActiveClass(evt.target);
 
@@ -42,15 +47,7 @@ const onFiltersClick = (images) => {
     } else if (evt.target.id === 'filter-discussed') {
       const theMistDiscussedImages = images.slice();
 
-      const getCommentsNumber = (element) => element.comments.length;
-
-      const compareTheNumberOfComments = (imagesA, imagesB) => {
-
-        const rankA = getCommentsNumber(imagesA);
-        const rankB = getCommentsNumber(imagesB);
-
-        return rankB - rankA;
-      };
+      const compareTheNumberOfComments = (imagesA, imagesB) => imagesB.comments.length - imagesA.comments.length;
 
       theMistDiscussedImages.sort(compareTheNumberOfComments);
       getPicturesContainer(theMistDiscussedImages);

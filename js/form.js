@@ -20,6 +20,10 @@ const MAX_COMMENT_LENGTH = 140;
 const SCALE_MIN_VALUE = 25;
 const SCALE_MAX_VALUE = 100;
 const SCALE_CHANGE_VALUE = 25;
+const MAX_HASHTAGS_QUANTITY = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const ALERT_SHOW_TIME = 5000;
+const VALID_HASHTAG = /^#[a-zа-яё0-9]{1,}$/i;
 
 const SLIDER_OPTIONS = {
   'chrome': {
@@ -138,10 +142,13 @@ const onEffectClick = ({ target: { value, type } }) => {
 };
 
 const ErrorMessages = {
-  HASHTAG_SUM: 'Нельзя указать больше 5 хэш-тегов',
-  HASHTAG_REPEAT: 'Хэштеги не должны повторяться',
-  HASHTAG_TEMPLATE: 'Хэштеги не соответствуют требованиям. Хэштег должен начинаться с знака #, не может содержать пробелы, спецсимволы, символы пунктуации, эмодзи',
-  COMMENT_LENGTH: 'Длинна комментария не должна быть больше 140 символов',
+  HASHTAG_SUM: `Нельзя указать больше ${MAX_HASHTAGS_QUANTITY} хэш-тегов!`,
+  HASHTAG_REPEAT: 'Хэштеги не должны повторяться!',
+  HASHTAG_INVALID: 'После решётки допустимы только буквы и числа!',
+  HASHTAG_ONLY: 'Хэштег не может состоять только из символа #!',
+  HASHTAG_LENGTH: `Максимальная длина хэштега ${MAX_HASHTAG_LENGTH} символов!`,
+  HASHTAG_SEPARATOR: 'Хэштеги должны быть разделены пробелами, без запятых!',
+  COMMENT_LENGTH: `Длина комментария не должна быть больше ${MAX_COMMENT_LENGTH} символов!`
 };
 Object.freeze(ErrorMessages);
 
@@ -170,59 +177,60 @@ const onChangePictureScale = ({ target }) => {
   }
 };
 
-const checkUniqueHashtags = (hashtags) => {
-  const uniqueValues = [];
-  let isUnique = true;
-  hashtags.forEach((element) => {
-    const value = element.toLowerCase();
-    if (uniqueValues.indexOf(value) !== -1) {
-      isUnique = false;
-    }
-    uniqueValues.push(value);
-  });
-  return isUnique;
-};
-
-const removeEmptyValues = (hashtags) => {
-  const nonEmptyHashtags = [];
-  hashtags.forEach((element) => {
-    if (element !== '') {
-      nonEmptyHashtags.push(element);
-    }
-  });
-  return nonEmptyHashtags;
-};
-
-const isFit = (hashtags, template) => hashtags.every((element) => template.test(element));
-
-const renderValidationMessages = (hashtags) => {
-  const re = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
-  const nonEmptyHashtags = removeEmptyValues(hashtags);
-  if (!isFit(nonEmptyHashtags, re)) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_TEMPLATE);
-  } else if (!checkUniqueHashtags(nonEmptyHashtags)) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_REPEAT);
-  } else if (nonEmptyHashtags.length > 5) {
-    hashtagsInput.setCustomValidity(ErrorMessages.HASHTAG_SUM);
-  } else {
-    hashtagsInput.setCustomValidity('');
-  }
-  hashtagsInput.reportValidity();
-};
-
 const onGetHashtags = (evt) => {
-  const hashtags = evt.target.value.split(' ');
-  renderValidationMessages(hashtags);
+  const input = evt.target;
+  const value = input.value.trim();
+  const hashtags = value.split(/\s+/);
+  const lowercasedTags = [];
+  let errorMessage = '';
+
+  if (!value) {
+    errorMessage = '';
+  } else if (value.includes(',')) {
+    errorMessage = ErrorMessages.HASHTAG_SEPARATOR;
+  } else if (hashtags.length > MAX_HASHTAGS_QUANTITY) {
+    errorMessage = ErrorMessages.HASHTAG_SUM;
+  } else {
+    for (const hashtag of hashtags) {
+      const lowerCaseHashtag = hashtag.toLowerCase();
+
+      if (hashtag === '#') {
+        errorMessage = ErrorMessages.HASHTAG_ONLY;
+        break;
+      }
+
+      if (hashtag.slice(1).includes('#')) {
+        errorMessage = ErrorMessages.HASHTAG_SEPARATOR;
+        break;
+      }
+
+      if (hashtag.length > MAX_HASHTAG_LENGTH) {
+        errorMessage = ErrorMessages.HASHTAG_LENGTH;
+        break;
+      }
+
+      if (!VALID_HASHTAG.test(hashtag.trim())) {
+        errorMessage = ErrorMessages.HASHTAG_INVALID;
+        break;
+      }
+
+      if (lowercasedTags.includes(lowerCaseHashtag)) {
+        errorMessage = ErrorMessages.HASHTAG_REPEAT;
+        break;
+      }
+
+      lowercasedTags.push(lowerCaseHashtag);
+    }
+  }
+
+  input.setCustomValidity(errorMessage);
+  input.reportValidity();
 };
 
 const onInputFocused = (evt) => evt.stopPropagation();
 
 const onCheckComment = ({ target: { value } }) => {
-  if (!checkStringLength(value, MAX_COMMENT_LENGTH)) {
-    commentInput.setCustomValidity(ErrorMessages.COMMENT_LENGTH);
-  } else {
-    commentInput.setCustomValidity('');
-  }
+  commentInput.setCustomValidity(checkStringLength(value, MAX_COMMENT_LENGTH) ? '' : commentInput.setCustomValidity(ErrorMessages.COMMENT_LENGTH));
   commentInput.reportValidity();
 };
 
@@ -239,18 +247,8 @@ const onCloseEditPictureForm = () => {
   removeEffectOfPicture();
   editPictureModal.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  editPictureCancelButton.removeEventListener('click', onCloseEditPictureForm);
-  hashtagsInput.removeEventListener('blur', onGetHashtags);
-  hashtagsInput.removeEventListener('keydown', onInputFocused);
-  commentInput.removeEventListener('input', onCheckComment);
-  commentInput.removeEventListener('keydown', onInputFocused);
-  smallScaleControl.removeEventListener('click', onChangePictureScale);
-  bigScaleControl.removeEventListener('click', onChangePictureScale);
-  effectPictureControl.removeEventListener('click', onEffectClick);
   slider.noUiSlider.destroy();
 };
-
-const ALERT_SHOW_TIME = 5000;
 
 const alertTemplate = document.querySelector('#error')
   .content
@@ -259,7 +257,7 @@ const successTemplate = document.querySelector('#success')
   .content
   .querySelector('.success');
 
-export const showAlert = (message) => {
+const showAlert = (message) => {
   const alertElement = alertTemplate.cloneNode(true);
   const title = alertElement.querySelector('.error__title');
   title.style.lineHeight = '1em';
@@ -328,7 +326,6 @@ const onSetFormSubmit = (evt) => {
       showSuccess();
     },
     () => {
-      onCloseEditPictureForm();
       showErrorModal();
     },
     new FormData(evt.target),
@@ -340,7 +337,7 @@ const showEditPictureForm = () => {
   document.body.classList.add('modal-open');
   scaleControlValue.value = '100%';
   editPictureCancelButton.addEventListener('click', onCloseEditPictureForm);
-  hashtagsInput.addEventListener('blur', onGetHashtags);
+  hashtagsInput.addEventListener('input', onGetHashtags);
   hashtagsInput.addEventListener('keydown', onInputFocused);
   commentInput.addEventListener('input', onCheckComment);
   commentInput.addEventListener('keydown', onInputFocused);
@@ -358,3 +355,4 @@ uploadPictureInput.addEventListener('change', () => {
   }
 });
 
+export {showAlert};

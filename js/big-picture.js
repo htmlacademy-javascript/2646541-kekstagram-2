@@ -35,10 +35,10 @@ const renderPopup = (data) => {
       socialComment.classList.add('hidden');
 
       socialPicture.classList.add('social__picture');
-      socialPicture.setAttribute('width', '35');
-      socialPicture.setAttribute('height', '35');
-      socialPicture.setAttribute('src', data.comments[counter].avatar);
-      socialPicture.setAttribute('alt', data.comments[counter].name);
+      socialPicture.width = 35;
+      socialPicture.height = 35;
+      socialPicture.src = data.comments[counter].avatar;
+      socialPicture.alt = data.comments[counter].name;
 
       socialText.classList.add('social_text');
       socialText.textContent = data.comments[counter].message;
@@ -50,7 +50,7 @@ const renderPopup = (data) => {
     }
   };
 
-  const showCommets = () => {
+  const showComments = () => {
     const socialCommentsArray = Array.from(socialComments.children);
 
     let visibleCommentsCouter = 0;
@@ -81,7 +81,7 @@ const renderPopup = (data) => {
 
   const onCommentsLoaderClick = () => {
     commentsNumber += NUMBER_UPLOADED_COMMENTS;
-    showCommets();
+    showComments();
   };
 
   const onCloseBigPicturePopup = (evt) => {
@@ -114,7 +114,7 @@ const renderPopup = (data) => {
   };
 
   getSocialComments();
-  showCommets();
+  showComments();
 
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
 
