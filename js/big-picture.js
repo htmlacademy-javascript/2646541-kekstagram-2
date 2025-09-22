@@ -35,10 +35,10 @@ const renderPopup = (data) => {
       socialComment.classList.add('hidden');
 
       socialPicture.classList.add('social__picture');
-      socialPicture.setAttribute('width', '35');
-      socialPicture.setAttribute('height', '35');
-      socialPicture.setAttribute('src', data.comments[counter].avatar);
-      socialPicture.setAttribute('alt', data.comments[counter].name);
+      socialPicture.width = 35;
+      socialPicture.height = 35;
+      socialPicture.src = data.comments[counter].avatar;
+      socialPicture.alt = data.comments[counter].name;
 
       socialText.classList.add('social_text');
       socialText.textContent = data.comments[counter].message;
