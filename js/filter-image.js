@@ -24,8 +24,8 @@ const onFiltersClick = (images) => {
   buttonConteiner.addEventListener('click', debounce((evt) => {
     const clickedButton = evt.target;
 
-    if(clickedButton.classList.contains('img-filters__button--active')) {
-      return
+    if (clickedButton.classList.contains('img-filters__button--active')) {
+      return;
     }
 
     assignAnActiveClass(evt.target);
@@ -47,9 +47,7 @@ const onFiltersClick = (images) => {
     } else if (evt.target.id === 'filter-discussed') {
       const theMistDiscussedImages = images.slice();
 
-      const compareTheNumberOfComments = (imagesA, imagesB) => {
-        return imagesB.comments.length - imagesA.comments.length;
-      };
+      const compareTheNumberOfComments = (imagesA, imagesB) => imagesB.comments.length - imagesA.comments.length;
 
       theMistDiscussedImages.sort(compareTheNumberOfComments);
       getPicturesContainer(theMistDiscussedImages);
