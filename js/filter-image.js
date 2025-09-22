@@ -2,10 +2,10 @@ import { getRandomInteger } from './utils.js';
 import {getPicturesContainer} from './draw-thumbnails.js';
 import {debounce} from './utils/debounce.js';
 
-const buttonConteiner = document.querySelector('.img-filters__form');
-const buttons = Array.from(buttonConteiner.children);
 const RERENDER_DELAY = 500;
 const NUMBER_RANDOM_IMAGES = 10;
+const buttonConteiner = document.querySelector('.img-filters__form');
+const buttons = Array.from(buttonConteiner.children);
 
 const removeFiltersHidden = () => {
   const filters = document.querySelector('.img-filters');
