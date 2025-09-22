@@ -328,7 +328,6 @@ const onSetFormSubmit = (evt) => {
       showSuccess();
     },
     () => {
-      onCloseEditPictureForm();
       showErrorModal();
     },
     new FormData(evt.target),
