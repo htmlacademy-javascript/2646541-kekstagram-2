@@ -1,5 +1,7 @@
 import {isEscEvent} from './utils.js';
 
+const NUMBER_UPLOADED_COMMENTS = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const closeBigPictureButton = bigPicture.querySelector('.cancel');
 const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
@@ -9,7 +11,6 @@ const socialComments = bigPicture.querySelector('.social__comments');
 const socialCommentsCount = bigPicture.querySelector('.social__comment-count');
 const commentsLoader = bigPicture.querySelector('.comments-loader');
 
-const NUMBER_UPLOADED_COMMENTS = 5;
 let commentsNumber = NUMBER_UPLOADED_COMMENTS;
 
 const renderPopup = (data) => {
