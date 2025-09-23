@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://unpkg.com/nouislider@14.6.3/distribute/nouislider.min.css">
+  <link rel="stylesheet" href="vendor/nouislider/nouislider.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>Кекстаграм</title>
 </head>
@@ -114,13 +114,15 @@
                   </ul>
                 </fieldset>
 
-                <!-- Добавление хэш-тегов и комментария к изображению -->
+                <!-- Добавление хэштегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
-                  <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"></textarea>
+                  <div class="img-upload__field-wrapper">
+                    <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  </div>
+                  <div class="img-upload__field-wrapper">
+                    <textarea class="text__description" name="description" placeholder="Ваш комментарий..."></textarea>
+                  </div>
                 </fieldset>
-
-                <div id="hashtagsErrors" class="errors"></div>
 
                 <!-- Кнопка для отправки данных на сервер -->
                 <button type="submit" class="img-upload__submit" id="upload-submit">Опубликовать</button>
@@ -232,7 +234,8 @@
   <template id="messages">
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
-  <script src="https://unpkg.com/nouislider@14.6.3/distribute/nouislider.min.js"></script>
+  <script src="vendor/nouislider/nouislider.js"></script>
+  <script src="vendor/pristine/pristine.min.js"></script>
   <script src="js/main.js" type="module"></script>
 
 </body>

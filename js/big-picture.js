@@ -52,30 +52,16 @@ const renderPopup = (data) => {
 
   const showComments = () => {
     const socialCommentsArray = Array.from(socialComments.children);
+    const totalComments = data.comments.length;
 
-    let visibleCommentsCouter = 0;
+    for (let i = 0; i < Math.min(commentsNumber, totalComments); i++) {
+      socialCommentsArray[i].classList.remove('hidden');
+    }
 
-    socialCommentsArray.forEach((element) => {
-      if (element.classList.contains('hidden')) {
-        visibleCommentsCouter++;
-      }
-    });
+    socialCommentsCount.innerHTML = `${Math.min(commentsNumber, totalComments)} из <span class="comments-count">${totalComments}</span> комментариев`;
 
-    if (visibleCommentsCouter < NUMBER_UPLOADED_COMMENTS) {
-      socialCommentsCount.innerHTML = `${data.comments.length} из <span class="comments-count">${data.comments.length}</span> комментариев`;
-      for (let counter = socialCommentsArray.length - 1; counter >= 0 ; counter--) {
-        socialCommentsArray[counter].classList.remove('hidden');
-      }
+    if (commentsNumber >= totalComments) {
       commentsLoader.classList.add('hidden');
-    } else {
-      socialCommentsCount.innerHTML = `${commentsNumber} из <span class="comments-count">${data.comments.length}</span> комментариев`;
-      for (let counter = 0; counter <= commentsNumber - 1 ; counter++) {
-        if (socialCommentsArray.length <= commentsNumber) {
-          commentsLoader.classList.add('hidden');
-          socialCommentsCount.innerHTML = `${data.comments.length} из <span class="comments-count">${data.comments.length}</span> комментариев`;
-        }
-        socialCommentsArray[counter].classList.remove('hidden');
-      }
     }
   };
 
@@ -84,43 +70,42 @@ const renderPopup = (data) => {
     showComments();
   };
 
-  const onCloseBigPicturePopup = (evt) => {
+  const onCloseBigPictureButtonClick = (evt) => {
+    evt.preventDefault();
+    closeBigPicture();
+  };
 
-    const closeBigPicturePopup = () => {
-      evt.preventDefault();
-      document.body.classList.remove('modal-open');
-      bigPicture.classList.add('hidden');
-      bigPictureImage.setAttribute('src', '');
-      likesCount.textContent = '';
-      commentsCount.textContent = '';
-      commentsLoader.classList.remove('hidden');
-
-      for (let counter = Array.from(socialComments.children).length - 1 ; counter >= 0 ; counter--) {
-        socialComments.removeChild(Array.from(socialComments.children)[counter]);
-      }
-
-      commentsNumber = NUMBER_UPLOADED_COMMENTS;
-
-      commentsLoader.removeEventListener('click', onCommentsLoaderClick);
-      closeBigPictureButton.removeEventListener('click', onCloseBigPicturePopup);
-      document.removeEventListener('keydown', onCloseBigPicturePopup);
-    };
-
-    if(evt.type === 'click') {
-      closeBigPicturePopup();
-    } else if(isEscEvent(evt)) {
-      closeBigPicturePopup();
+  const onDocumentKeydown = (evt) => {
+    if (isEscEvent(evt)) {
+      closeBigPicture();
     }
   };
+
+  function closeBigPicture () {
+    document.body.classList.remove('modal-open');
+    bigPicture.classList.add('hidden');
+    bigPictureImage.setAttribute('src', '');
+    likesCount.textContent = '';
+    commentsCount.textContent = '';
+    commentsLoader.classList.remove('hidden');
+
+    Array.from(socialComments.children).forEach((comment) => comment.remove());
+
+    commentsNumber = NUMBER_UPLOADED_COMMENTS;
+
+    commentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    closeBigPictureButton.removeEventListener('click', onCloseBigPictureButtonClick);
+    document.removeEventListener('keydown', onDocumentKeydown);
+  }
 
   getSocialComments();
   showComments();
 
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
 
-  closeBigPictureButton.addEventListener('click', onCloseBigPicturePopup);
+  closeBigPictureButton.addEventListener('click', onCloseBigPictureButtonClick);
 
-  document.addEventListener('keydown', onCloseBigPicturePopup);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 export {renderPopup};
