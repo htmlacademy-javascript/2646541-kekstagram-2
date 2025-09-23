@@ -1,6 +1,16 @@
 import { checkStringLength } from './utils.js';
 import { sendData } from './api.js';
 
+const MAX_COMMENT_LENGTH = 140;
+const MAX_HASHTAGS_QUANTITY = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const ALERT_SHOW_TIME = 5000;
+const VALID_HASHTAG = /^#[a-zа-яё0-9]{1,}$/i;
+const SCALE_MIN_VALUE = 25;
+const SCALE_MAX_VALUE = 100;
+const SCALE_CHANGE_VALUE = 25;
+const SCALE_DEFAULT_VALUE = 100;
+
 const sliderContainer = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
 const effectValueInput = document.querySelector('.effect-level__value');
@@ -17,16 +27,6 @@ const effectPictureControl = document.querySelector('.effects__list');
 const editPictureForm = document.querySelector('.img-upload__form');
 const alertTemplate = document.querySelector('#error').content.querySelector('.error');
 const successTemplate = document.querySelector('#success').content.querySelector('.success');
-
-const MAX_COMMENT_LENGTH = 140;
-const MAX_HASHTAGS_QUANTITY = 5;
-const MAX_HASHTAG_LENGTH = 20;
-const ALERT_SHOW_TIME = 5000;
-const VALID_HASHTAG = /^#[a-zа-яё0-9]{1,}$/i;
-const SCALE_MIN_VALUE = 25;
-const SCALE_MAX_VALUE = 100;
-const SCALE_CHANGE_VALUE = 25;
-const SCALE_DEFAULT_VALUE = 100;
 
 let pristine = null;
 
@@ -149,14 +149,14 @@ const initPristine = () => {
     };
 
     pristine.addValidator(hashtagsInput, checkHashtags, getHashtagErrorMessage);
-    hashtagsInput.addEventListener('input', () => pristine.validateField(hashtagsInput));
+    hashtagsInput.addEventListener('input', () => pristine.validate(hashtagsInput));
 
     pristine.addValidator(
       commentInput,
       (value) => checkStringLength(value, MAX_COMMENT_LENGTH),
       `Максимальная длина комментария ${MAX_COMMENT_LENGTH} символов`
     );
-    commentInput.addEventListener('input', () => pristine.validateField(commentInput));
+    commentInput.addEventListener('input', () => pristine.validate(commentInput));
   }
 };
 
@@ -184,7 +184,7 @@ const showAlert = (message) => {
   setTimeout(() => alertElement.remove(), ALERT_SHOW_TIME);
 };
 
-const closeErrorModal = () => document.querySelector('.error')?.remove();
+const onCloseErrorModal = () => document.querySelector('.error')?.remove();
 const onCloseSuccessModal = () => document.querySelector('.success')?.remove();
 
 const onEscButton = (evt) => {
@@ -194,7 +194,7 @@ const onEscButton = (evt) => {
   const errorModal = document.querySelector('.error');
   const successModal = document.querySelector('.success');
   if (errorModal) {
-    return closeErrorModal();
+    return onCloseErrorModal();
   }
   if (successModal) {
     return onCloseSuccessModal();
@@ -206,7 +206,7 @@ const onEscButton = (evt) => {
 
 const showErrorModal = () => {
   const errorModalElement = alertTemplate.cloneNode(true);
-  errorModalElement.querySelector('.error__button').addEventListener('click', closeErrorModal);
+  errorModalElement.querySelector('.error__button').addEventListener('click', onCloseErrorModal);
   document.body.appendChild(errorModalElement);
   document.addEventListener('keydown', onEscButton);
 };

@@ -4,6 +4,7 @@ import {debounce} from './utils/debounce.js';
 
 const RERENDER_DELAY = 500;
 const NUMBER_RANDOM_IMAGES = 10;
+
 const buttonConteiner = document.querySelector('.img-filters__form');
 let currentActiveButton = document.querySelector('.img-filters__button--active');
 
